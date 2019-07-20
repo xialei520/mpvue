@@ -9,6 +9,7 @@ var MpvuePlugin = require('webpack-mpvue-asset-plugin')
 var glob = require('glob')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
 var relative = require('relative')
+// const vuxLoader = require('vux-loader')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -93,6 +94,10 @@ let baseWebpackConfig = {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[ext]')
         }
+      },
+      {
+        test: /.less$/, 
+        loader: "style-loader!css-loader!less-loader"
       }
     ]
   },
@@ -139,4 +144,4 @@ if (/^(swan)|(tt)$/.test(PLATFORM)) {
   })
 }
 
-module.exports = baseWebpackConfig
+module.exports = baseWebpackConfig 

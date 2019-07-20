@@ -1,126 +1,93 @@
 <template>
-  <div @click="clickHandle">
-
-    <div class="userinfo" @click="bindViewTap">
-      <img class="userinfo-avatar" v-if="userInfo.avatarUrl" :src="userInfo.avatarUrl" background-size="cover" />
-      <img class="userinfo-avatar" src="/static/images/user.png" background-size="cover" />
-
-      <div class="userinfo-nickname">
-        <card :text="userInfo.nickName"></card>
-      </div>
-    </div>
-
-    <div class="usermotto">
-      <div class="user-motto">
-        <card :text="motto"></card>
-      </div>
-    </div>
-
-    <form class="form-container">
-      <input type="text" class="form-control" :value="motto" placeholder="v-model" />
-      <input type="text" class="form-control" v-model="motto" placeholder="v-model" />
-      <input type="text" class="form-control" v-model.lazy="motto" placeholder="v-model.lazy" />
-    </form>
-
-    <a href="/pages/counter/main" class="counter">去往Vuex示例页面</a>
-
-    <div class="all">
-        <div class="left">
-        </div>
-        <div class="right">
-        </div>
-    </div>
-  </div>
+	
+	<div class="container">
+		<div class="imgContainer">
+			<img v-if="isShow" class="img" :src="userInfo.avatarUrl" alt="">
+			<!-- <Button v-else class="getInfo" openType="getUserInfo" @getuserinfo="getUserInfo">点击获取用户信息</Button> -->
+			<u-button userInfo="true" value="点击获取用户信息"></u-button>
+			
+		</div>
+		<p class="title" @tap.stop="goList">hello  mpvue</p>
+		<p class="btn" @tap.stop="goDetail">开启小程序之旅</p>
+	</div>
 </template>
-
 <script>
-import card from '@/components/card'
 
 export default {
-  data () {
-    return {
-      motto: 'Hello miniprograme',
-      userInfo: {
-        nickName: 'mpvue',
-        avatarUrl: 'http://mpvue.com/assets/logo.png'
-      }
-    }
-  },
+	data(){
+		return{
+			userInfo: {},
+			isShow: false
+		}
+	},
+	beforeMount(){
+		
+	},
+	mounted(){
+		 console.log('mounted')
+		 this.getMessage();
+		 console.log(this.$app.alert('啦啦啦'))
+	},
+	methods: {
+		getUserInfo(data){
+			console.log(data)
+			if(data.mp.detail.rawData){
+				this.getMessage()
+			}else{
 
-  components: {
-    card
-  },
+			}
+		},
+		getMessage(){
+			wx.getUserInfo({
+				success: (data) => {
+					this.isShow = true;
+					console.log(data, 123)
+					this.userInfo = data.userInfo;
+				},
+				fail: (data) => {
+					console.log('获取失败')
+					this.isShow = false;
 
-  methods: {
-    bindViewTap () {
-      const url = '../logs/main'
-      if (mpvuePlatform === 'wx') {
-        mpvue.switchTab({ url })
-      } else {
-        mpvue.navigateTo({ url })
-      }
-    },
-    clickHandle (ev) {
-      console.log('clickHandle:', ev)
-      // throw {message: 'custom test'}
-    }
-  },
+				}
+			})
+		},
+		goDetail(){
+			wx.navigateTo({
+				url: "/pages/list/main"
+			})
+		},
+		goList(){
+			wx.navigateTo({
+				url: "/pages/songList/main"
+			})
+		}
 
-  created () {
-    // let app = getApp()
-  }
+	}
 }
 </script>
+<style>
+page{
+	background: #8ed145;
+}
+.imgContainer{
 
-<style scoped>
-.userinfo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
-
-.userinfo-avatar {
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
-  border-radius: 50%;
+.container{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
-
-.userinfo-nickname {
-  color: #aaa;
+.img{
+	width: 200rpx;
+	height: 200rpx;
+	border-radius: 50%;
 }
-
-.usermotto {
-  margin-top: 150px;
-}
-
-.form-control {
-  display: block;
-  padding: 0 12px;
-  margin-bottom: 5px;
-  border: 1px solid #ccc;
-}
-.all{
-  width:7.5rem;
-  height:1rem;
-  background-color:blue;
-}
-.all:after{
-  display:block;
-  content:'';
-  clear:both;
-}
-.left{
-  float:left;
-  width:3rem;
-  height:1rem;
-  background-color:red;
-}
-
-.right{
-  float:left;
-  width:4.5rem;
-  height:1rem;
-  background-color:green;
+.getInfo{
+	width: 200rpx;
+	height: 200rpx;
+	border-radius: 50%;
+	font-size: 25rpx;
+	text-align: center;
+	line-height: 200rpx;
 }
 </style>
