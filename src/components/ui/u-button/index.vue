@@ -1,7 +1,7 @@
 <template>
 	<div class="btn-area">
 		<mp-button v-if="!userInfo" :disabled="disabled" :type="type" :size="size" btnClass="mb15" @click="tap">{{value}}</mp-button>
-		<mp-button v-else :disabled="disabled" :type="type" :size="size" btnClass="mb15" openType="getUserInfo" @getuserinfo="getuserinfo">{{value}}</mp-button>
+		<mp-button v-else :disabled="disabled" :type="type" :size="size" btnClass="getInfo" openType="getUserInfo" @getuserinfo="getuserinfo">{{value}}</mp-button>
 
 		
 	</div>
@@ -59,5 +59,13 @@ export default {
 .mb15{
 	width: 80%;
 
+}
+.getInfo{
+	width: 200rpx;
+	height: 200rpx;
+	border-radius: 50%;
+	font-size: 25rpx;
+	text-align: center;
+	line-height: 200rpx;
 }
 </style>

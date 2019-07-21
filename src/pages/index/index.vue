@@ -3,15 +3,24 @@
 	<div class="container">
 		<div class="imgContainer">
 			<img v-if="isShow" class="img" :src="userInfo.avatarUrl" alt="">
-			<!-- <Button v-else class="getInfo" openType="getUserInfo" @getuserinfo="getUserInfo">点击获取用户信息</Button> -->
-			<u-button userInfo="true" value="点击获取用户信息"></u-button>
+			<Button v-else class="getInfo" openType="getUserInfo" @getuserinfo="getUserInfo">点击获取用户信息</Button>
+			<!-- <u-button v-else class="getInfo" userInfo="true" value="点击获取用户信息"></u-button> -->
 			
 		</div>
-		<p class="title" @tap.stop="goList">hello  mpvue</p>
-		<p class="btn" @tap.stop="goDetail">开启小程序之旅</p>
+		<!-- <p class="title" @tap.stop="goList">hello  mpvue</p> -->
+		<!-- <p class="btn" @tap.stop="goDetail">开启小程序之旅</p> -->
+		<div class="btn-area">
+			<u-button size="large" @click2="goList"  value="音乐搜索"></u-button>
+		 
+			<u-button size="large" @click2="goDetail"  value="image show"></u-button>
+		</div>
+		
+
+
 	</div>
 </template>
 <script>
+import uButton from '@/components/ui/u-button';
 
 export default {
 	data(){
@@ -19,6 +28,9 @@ export default {
 			userInfo: {},
 			isShow: false
 		}
+	},
+	components: {
+		uButton
 	},
 	beforeMount(){
 		
@@ -70,7 +82,7 @@ page{
 	background: #8ed145;
 }
 .imgContainer{
-
+	margin-top: 100rpx;
 }
 .container{
 	display: flex;
@@ -89,5 +101,13 @@ page{
 	font-size: 25rpx;
 	text-align: center;
 	line-height: 200rpx;
+}
+.btn-area{
+	width: 100%;
+	height: 400rpx;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	margin-top: 200rpx;
 }
 </style>

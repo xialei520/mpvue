@@ -1,21 +1,21 @@
 <template>
 	<div class="container">
 		<div class="search-header">
-			<u-input @value="getValue"></u-input>
-	 		<u-button size='normal' value="搜索" @click2="search"></u-button>
+			<u-input ref="inputBlur" @value="getValue"></u-input>
+	 		<u-button size='small' value="搜索" @click2="search"></u-button>
 			
 		</div>
-	 	<div class="item-list" v-for="(item, index) in songlist" :key="index" @tap="player(item.data)">
+	 	<div class="item-list" :class="{'list-background':ind === index}" v-for="(item, index) in songlist" :key="index" @tap="ind = index; player(item)">
 	 		<div class="item-left">
-	 			<!-- <img :src="item.data.albumid | filterSrc" alt=""> -->
+	 			<img src="http://imgcache.qq.com/music/photo/album_300/17/300_albumpic_8217_0.jpg" alt="">
 	 		</div>
 	 		<div class="item-right">
-	 			<p>{{item.data.songname}}</p>
-	 			<!-- <p>{{item.singer[0].name}}</p> -->
+	 			<p>{{item.songname}}</p>
+	 			<p>{{item.singer[0].name}}</p>
 	 		</div>
 
 	 	</div>
-	 	<u-button value="提交"></u-button>
+	 	<!-- <u-button value="提交"></u-button> -->
 	 	 
 
 	</div>
@@ -24,13 +24,14 @@
 // import { XButton } from 'vux'
 import uButton from '@/components/ui/u-button';
 import uInput from '@/components/ui/u-input';
-
+const innerAudioContext = wx.createInnerAudioContext()
 export default {
 	data(){
 		return{
 			songlist: [],
 			playUrl: '',
-			value: ''
+			value: '',
+			ind: ''
 			
 		}
 	},
@@ -39,24 +40,17 @@ export default {
 		uInput
 	},
 	filters: {
-		filterSrc(res){
-			console.log(res, 999)
+		filterSrc(){
+			// console.log(res, 999)
 			// return `http://imgcache.qq.com/music/photo/album_300/17/300_albumpic_${res.albumid}_0.jpg`
 			return 'http://imgcache.qq.com/music/photo/album_300/17/300_albumpic_8217_0.jpg'
-
 		}
 	},
 	computed: {
-		// src: {
-			// console.log(res, 7777)
-			// return  `http://imgcache.qq.com/music/photo/album_300/17/300_albumpic_${item.data.albumid}_0.jpg`
-			// get(res){
-			// 	console.log(res, '螺丝孔')
-			// },
-			// set(){
-
-			// }
-		// }
+		src(){
+			return 'http://imgcache.qq.com/music/photo/album_300/17/300_albumpic_8217_0.jpg'
+			 
+		}
 		
 	},
 	beforeMount(){
@@ -66,36 +60,34 @@ export default {
 		// this.$jquery.toast("取消操作", "cancel");
 		// console.log(App.alert())
 	   	 // console.log()
-	   	 this.$app.http({url: "https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg?g_tk=5381&uin=0&format=json&inCharset=utf-8&outCharset=utf-8¬ice=0&platform=h5&needNewCode=1&tpl=3&page=detail&type=top&topid=27&_=1519963122923"}).then(res => {
-	   	 	console.log(res, 77)
-				let {songlist} = res.data;
-	   	 	if(res.status == 200){
-				console.log(songlist,11)
+	   	//  this.$app.http({url: "https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg?g_tk=5381&uin=0&format=json&inCharset=utf-8&outCharset=utf-8¬ice=0&platform=h5&needNewCode=1&tpl=3&page=detail&type=top&topid=27&_=1519963122923"}).then(res => {
+	   	//  	console.log(res, 77)
+		// 		let {songlist} = res.data;
+	   	//  	if(res.status == 200){
+		// 		console.log(songlist,11)
 
-	   	 		this.songlist = songlist;
-	   	 	}
-	   	 })
+	   	//  		this.songlist = songlist;
+	   	//  	}
+	   	//  })
 		// 
 	},
 	methods: {
 		getValue(res){
 			console.log(res, 'llslsl')
 			this.value = res;
+			this.search()
 		},
 		search(){
-			
+			this.$refs.inputBlur.blur()
 			let url = `https://c.y.qq.com/soso/fcgi-bin/client_search_cp?aggr=1&cr=1&flag_qc=0&p=1&n=30&w=${this.value}`
 			this.$app.http({url}).then(res => {
 	   	 	// console.log(res, 77)
 				 
 	   	 	if(res.status == 200){
-				let matchs = res.data.match(/^[(][.*]*[)]$/);
-				console.log(matchs)
-				if(matchs){
-					// let needData = JSON.parse(matchs)
-				}
+				let data = res.data.substring(9, res.data.length-1)
+				console.log(JSON.parse(data).data.song.list)
 				 
-	   	 		// this.songlist = songlist;
+	   	 		this.songlist = JSON.parse(data).data.song.list;
 	   	 	}
 	   	 })
 		},
@@ -118,11 +110,18 @@ export default {
 			 
 		 },
 		 player(res){
-			 this.getToken(res).then(r => {
+			// innerAudioContext.destroy()
+			innerAudioContext.pause()
+			
+
+			this.getToken(res).then(r => {
+
 				console.log('vkey', r)
 				let url = `http://ws.stream.qqmusic.qq.com/C400${r[1].songmid}.m4a?fromtag=0&guid=126548448&vkey=${r[0]}`;
 				console.log(url, 'kkk')
-				const innerAudioContext = wx.createInnerAudioContext()
+				// const innerAudioContext = wx.createInnerAudioContext()
+
+				// innerAudioContext.stop()
 				innerAudioContext.autoplay = true
 				innerAudioContext.src = url;
 				innerAudioContext.onPlay(() => {
@@ -170,7 +169,13 @@ export default {
 		 width: 100%;
 		 height: 100rpx;
 		 display: flex;
+		//  border: 1px solid red;
+		 margin-top: 20rpx;
+		 align-items: center;
 		 
+	 }
+	 .list-background{
+		 background: #1AAD19;
 	 }
 }
 

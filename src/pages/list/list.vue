@@ -35,7 +35,7 @@ export default {
 		// this.$jquery.toast("取消操作", "cancel");
 		// console.log(App.alert())
 	   	 // console.log()
-	   	 this.$app.http({url: "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/1"}).then(res => {
+	   	 this.$app.http({url: "https://gank.io/api/data/%E7%A6%8F%E5%88%A9/100/1"}).then(res => {
 	   	 	console.log(res, 77)
 	   	 	let {error, results} = res.data;
 	   	 	if(!error){

@@ -1,6 +1,6 @@
 <template>
 	<div class="btn-area">
-		<mp-input confirmType="done"  type="text" placeholder="数据双向绑定" v-model="inputValue" @focus="inputFocus" @input="input"></mp-input>
+		<mp-input ref="input"  confirmType="done"  type="text" :placeholder="placeholder" v-model="inputValue" @focus="inputFocus" @blur="inputBlur" @input="input"></mp-input>
 
 		
 	</div>
@@ -15,7 +15,10 @@ export default {
 		}
 	},
 	props: {
-		 
+		placeholder: {
+			type: String,
+			default: '请输入关键词'
+		}
 	},
 	components: {
 		mpInput
@@ -27,19 +30,38 @@ export default {
         input(){
             
             this.$emit('value', this.inputValue)
+			 
+		},
+		inputFocus(){
+			this.placeholder= ''
+		},
+		inputBlur(){
 
-        }
+		},
+		blur(){
+			this.$refs.input.blur();
+		}
 	}
 }
 </script>
+<style lang="less">
+.weui-input{
+	border: 3rpx solid #1AAD19 ;
+	height: 90rpx;
+	width: 500rpx;
+
+}
+</style>
+
 <style lang="less" scoped>
 .btn-area{
-	width: 90%;
-	margin: 0 auto;
+	
+	margin-left: 40rpx;
+	margin-right: 20rpx;
+	// margin-top: 20rpx;
+	margin-bottom: 20rpx;
+	// overflow: hidden;
 
 }
-.mb15{
-	width: 80%;
 
-}
 </style>
