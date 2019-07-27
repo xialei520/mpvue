@@ -1,9 +1,8 @@
 
-const App= getApp();
 var Fly=require("flyio/dist/npm/wx") 
 var fly=new Fly
 
-let obj = {
+let window = {
 	alert(str){
 		console.log(str)
 	},
@@ -28,4 +27,5 @@ let obj = {
 		
 	}
 }
-Object.assign(App, obj)
+
+export default window;

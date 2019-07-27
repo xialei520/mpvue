@@ -13,6 +13,9 @@
 			<u-button size="large" @click2="goList"  value="音乐搜索"></u-button>
 		 
 			<u-button size="large" @click2="goDetail"  value="image show"></u-button>
+			<u-button size="large" @click2="login"  value="登陆"></u-button>
+			<u-button size="large" @click2="test"  value="test"></u-button>
+			
 		</div>
 		
 
@@ -38,9 +41,24 @@ export default {
 	mounted(){
 		 console.log('mounted')
 		 this.getMessage();
-		 console.log(this.$app.alert('啦啦啦'))
+		this.checkSession();
+		 console.log(this.$window.alert('啦啦啦'))
 	},
 	methods: {
+		//检测登陆是否过期
+		
+		checkSession(){
+			let _this = this;
+			wx.checkSession({
+				success () {
+					//session_key 未过期，并且在本生命周期一直有效
+				},
+				fail () {
+					// session_key 已经失效，需要重新执行登录流程
+					_this.login() //重新登录
+				}
+			})
+		},
 		getUserInfo(data){
 			console.log(data)
 			if(data.mp.detail.rawData){
@@ -71,6 +89,43 @@ export default {
 		goList(){
 			wx.navigateTo({
 				url: "/pages/songList/main"
+			})
+		},
+		login(){
+			console.log('123')
+			let _this = this;
+			wx.login({
+				success (res) {
+					if (res.code) {
+						//发起网络请求
+						console.log(res, 99)
+						_this.$window.http({
+							url: `https://api.weixin.qq.com/sns/jscode2session?appid=wx39268561e231bae4&secret=2c09270fa7ae70347256d15911004c47&js_code=${res.code}&grant_type=authorization_code`
+						}).then(r => {
+							console.log(r, '看看看')
+							let {openid, session_key} = r.data;
+							//分发action修改状态
+							_this.$store.dispatch('getLogin', {openid, session_key});
+							var login = _this.$store.getters.getLogin;
+							console.log(login , '====')
+							wx.showToast({
+								title: '成功',
+								icon: 'success',
+								duration: 2000
+							})
+						})
+					 
+					} else {
+						console.log('登录失败！' + res.errMsg)
+					}
+				}
+			})
+		},
+		test(){
+			this.$window.http({
+				url: 'https://www.loveinmymind.xyz:8080/test'
+			}).then(r => {
+				console.log('api CESHI', r)
 			})
 		}
 
