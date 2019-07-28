@@ -123,7 +123,7 @@ export default {
 		},
 		test(){
 			this.$window.http({
-				url: 'https://www.loveinmymind.xyz:8080/test'
+				url: 'http://www.loveinmymind.xyz:8080/test'
 			}).then(r => {
 				console.log('api CESHI', r)
 			})

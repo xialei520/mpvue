@@ -1,7 +1,8 @@
 <template>
 	<div class="container">
 		<div class="search-header">
-			<u-input ref="inputBlur" @value="getValue"></u-input>
+			<!-- <u-input ref="inputBlur" @value="getValue"></u-input> -->
+			<input type="text" v-model="value">
 	 		<u-button size='small' value="搜索" @click2="search"></u-button>
 			
 		</div>
@@ -78,7 +79,7 @@ export default {
 			this.search()
 		},
 		search(){
-			this.$refs.inputBlur.blur()
+			// this.$refs.inputBlur.blur()
 			let url = `https://c.y.qq.com/soso/fcgi-bin/client_search_cp?aggr=1&cr=1&flag_qc=0&p=1&n=30&w=${this.value}`
 			this.$window.http({url}).then(res => {
 	   	 	// console.log(res, 77)
